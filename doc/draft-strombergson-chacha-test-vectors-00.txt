@@ -137,7 +137,7 @@ Internet-Draft  Test Vectors for the Stream Cipher ChaCha   October 2013
    known answers.  The test vectors in a test case has been generated
    with support for:
 
-      128 and 256 bit keys.
+      128 and 256 bit keys
       8, 12 and 20 rounds
 
    This means that for a given test case there are 6 different test
