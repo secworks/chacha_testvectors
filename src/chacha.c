@@ -5,9 +5,9 @@
 //
 // ChaCha reference model and test vector generator. Very much
 // needed for ChaCha. The code is heavily based on the chacha ref 
-// model by DJB. This code is self contained, contains test vectors
-// and is cleaned up somewhat. (Does not reference Salsa20 functions
-// etc.)
+// model by DJB. This code is self contained, provides test vectors
+// and is somewhat ceaned up. (Does not calls functions Salsa20- 
+// something etc.)
 //
 //
 // Copyright (c) 2013 Secworks Sweden AB
