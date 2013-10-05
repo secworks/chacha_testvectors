@@ -1495,6 +1495,8 @@ Keystream block 2:
 	  <author initials="DJB" surname="Bernstein"
 		  fullname="Daniel J. Bernstein"/>
 	</front>
+        <seriesInfo name="WWW"
+                    value="http://cr.yp.to/chacha/chacha-20080128.pdf" />
       </reference>
 
       <reference anchor="RC4">

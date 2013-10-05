@@ -1741,7 +1741,8 @@ Internet-Draft  Test Vectors for the Stream Cipher ChaCha   October 2013
 
 7.1.  Normative References
 
-   [ChaCha]   Bernstein, DJB., "ChaCha, a variant of Salsa20".
+   [ChaCha]   Bernstein, DJB., "ChaCha, a variant of Salsa20",
+              WWW http://cr.yp.to/chacha/chacha-20080128.pdf.
 
    [RC4]      Schneier, B., "Applied Cryptography, second edition,
               section 17.1, page 397".
@@ -1767,7 +1768,6 @@ Author's Address
 
    Email: joachim@secworks.se
    URI:   http://secworks.se/
-
 
 
 
