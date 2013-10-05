@@ -1749,7 +1749,7 @@ Internet-Draft  Test Vectors for the Stream Cipher ChaCha   October 2013
 7.2.  Informative References
 
    [chacha.c]
-              Bernstein, DJB., "chacha_testvectors",
+              Bernstein, DJB., "The ChaCha family of stream ciphers",
               WWW http://cr.yp.to/chacha.html.
 
    [chacha_testvectors]

@@ -1511,7 +1511,7 @@ Keystream block 2:
 
      <reference anchor="chacha.c">
         <front>
-          <title>chacha_testvectors</title>
+          <title>The ChaCha family of stream ciphers</title>
           <author initials="DJB" surname="Bernstein" fullname="Daniel" />
         </front>
         <seriesInfo name="WWW"
