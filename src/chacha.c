@@ -436,15 +436,17 @@ int main(void)
   printf("\n");
 
 
-  // TC 10: A random key and IV.
-  // key: echo -n "All your base are belong to us." | openssl dgst -sha256
-  // IV: echo -n "All your base are belong to us." | openssl dgst -md5
-  // TODO: Create these vectors.
-  printf("TC10: key: 'All your base are belong to us!, IV: 'IETF2013'\n");
-  printf("-----------------------------------------------------------\n");
-  uint8_t tc10_key[32] = "All your base are belong to us!";
-  uint8_t tc10_iv[8]   = "IETF2013";
-  gen_testvectors(tc10_key, tc10_iv);
+  // TC 8: A random key and IV.
+  // key: echo -n "All your base are belong to us" | openssl dgst -sha256
+  // IV: echo -n "Internet Engineering Task Force" | openssl dgst -sha256
+  printf("TC8: key: 'All your base are belong to us!, IV: 'IETF2013'\n");
+  printf("----------------------------------------------------------\n");
+  uint8_t tc8_key[32] = {0xc4, 0x6e, 0xc1, 0xb1, 0x8c, 0xe8, 0xa8, 0x78, 
+                         0x72, 0x5a, 0x37, 0xe7, 0x80, 0xdf, 0xb7, 0x35, 
+                         0x1f, 0x68, 0xed, 0x2e, 0x19, 0x4c, 0x79, 0xfb, 
+                         0xc6, 0xae, 0xbe, 0xe1, 0xa6, 0x67, 0x97, 0x5d};
+  uint8_t tc8_iv[8]   = {0x1a, 0xda, 0x31, 0xd5, 0xcf, 0x68, 0x82, 0x21};
+  gen_testvectors(tc8_key, tc8_iv);
   
   return 0;
 }
