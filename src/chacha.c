@@ -245,9 +245,9 @@ void print_block(uint8_t block[64])
   uint8_t i;
 
   for (i = 0 ; i < 64 ; i++) {
-    if ((i % 8) == 0) {
-        printf("block[%02d - %02d]: ", i, (i + 7));
-      }
+    /* if ((i % 8) == 0) { */
+    /*     printf("block[%02d - %02d]: ", i, (i + 7)); */
+    /*   } */
 
     printf("0x%02x ", block[i]);
 
@@ -267,16 +267,16 @@ void print_block(uint8_t block[64])
 void print_key_iv(uint8_t *key, uint32_t keylen,  uint8_t *iv) {
   uint8_t i;
 
-  printf("Key: ");
+  printf("Key:    ");
   for (i = 0 ; i < (keylen / 8) ; i++) {
-    if (0 == ((i+1) % 9)) {
-        printf("\n     ");
+    if ((i > 0) && (0 == (i % 8))) {
+        printf("\n        ");
       }
     printf("0x%02x ", key[i]);
   }
   printf("\n");
 
-  printf("IV:  ");
+  printf("IV:     ");
   for (i = 0 ; i < 8 ; i++) {
     printf("0x%02x ", iv[i]);
   }
@@ -322,24 +322,23 @@ void gen_testvectors(uint8_t *key, uint8_t *iv)
   for (ki = 0 ; ki < 2 ; ki++) {
     for (ri = 0 ; ri < 3 ; ri++) {
       print_key_iv(key, keylens[ki], iv);
-      printf("Key lenght: %d, Number of rounds: %d\n", keylens[ki], rounds[ri]);
-      printf("---------------------------------------\n");
+      printf("Rounds: %d\n\n", rounds[ri]);
       // Start with clean context.
       init_ctx(&my_ctx, rounds[ri]);
       init(&my_ctx, key, keylens[ki], iv);
       
       // Block 0.
       next(&my_ctx, data, result);
-      printf("Internal state after block 0:\n");
-      print_ctx(&my_ctx);
-      printf("Keystream block 0:\n");
+      // printf("Internal state after block 0:\n");
+      // print_ctx(&my_ctx);
+      printf("Keystream block 1:\n");
       print_block(result);
       
       // Block 1.
       next(&my_ctx, data, result);
-      printf("Internal state after block 1:\n");
-      print_ctx(&my_ctx);
-      printf("Keystream block 1:\n");
+      // printf("Internal state after block 1:\n");
+      // print_ctx(&my_ctx);
+      printf("Keystream block 2:\n");
       print_block(result);
       printf("\n");
     }
@@ -356,46 +355,93 @@ void gen_testvectors(uint8_t *key, uint8_t *iv)
 int main(void)
 {
   printf("Test vectors for the ChaCha stream cipher\n");
-  printf("-----------------------------------------\n");
-  printf("\n");
+  printf("=========================================\n\n");
 
-  // TC1: All zero key and IV.
+
+  printf("TC1: All zero key and IV.\n");
+  printf("-------------------------\n");
   uint8_t tc1_key[32] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-  uint8_t tc1_iv[8] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint8_t tc1_iv[8]   = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
   gen_testvectors(tc1_key, tc1_iv);
+  printf("\n");
 
 
-  // TC2: All one key and IV.
-  uint8_t tc2_key[32] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
+  printf("TC2: Single bit in key set. All zero IV.\n");
+  printf("----------------------------------------\n");
+  uint8_t tc2_key[32] = {0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint8_t tc2_iv[8]   = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  gen_testvectors(tc2_key, tc2_iv);
+  printf("\n");
+
+
+  printf("TC3: Single bit in IV set. All zero key.\n");
+  printf("----------------------------------------\n");
+  uint8_t tc3_key[32] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+                         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  uint8_t tc3_iv[8]   = {0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+  gen_testvectors(tc3_key, tc3_iv);
+  printf("\n");
+
+
+  printf("TC4: All bits in key and IV are set.\n");
+  printf("------------------------------------\n");
+  uint8_t tc4_key[32] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                          0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                          0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff,
                          0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-  uint8_t tc2_iv[8] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
-  gen_testvectors(tc2_key, tc2_iv);
+  uint8_t tc4_iv[8]   = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
+  gen_testvectors(tc4_key, tc4_iv);
+  printf("\n");
 
  
-  // TC3: Every second bit set.
-  uint8_t tc3_key[32] = {0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+  printf("TC5: Every even bit set in key and IV.\n");
+  printf("--------------------------------------\n");
+  uint8_t tc5_key[32] = {0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
                          0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
                          0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
                          0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55};
-  uint8_t tc3_iv[8] = {0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
-  gen_testvectors(tc3_key, tc3_iv);
+  uint8_t tc5_iv[8]   = {0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
+  gen_testvectors(tc5_key, tc5_iv);
+  printf("\n");
+
+ 
+  printf("TC6: Every odd bit set in key and IV.\n");
+  printf("-------------------------------------\n");
+  uint8_t tc6_key[32] = {0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+                         0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+                         0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
+                         0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55};
+  uint8_t tc6_iv[8]   = {0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa};
+  gen_testvectors(tc6_key, tc6_iv);
+  printf("\n");
 
 
   // TC4: Sequence patterns.
-  uint8_t tc4_key[32] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
+  printf("TC7: Sequence patterns in key and IV.\n");
+  printf("-------------------------------------\n");
+  uint8_t tc7_key[32] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
                          0x88, 0x99, 0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff,
                          0xff, 0xee, 0xdd, 0xcc, 0xbb, 0xaa, 0x99, 0x88,
                          0x77, 0x66, 0x55, 0x44, 0x33, 0x22, 0x11, 0x00};
-  uint8_t tc4_iv[8] = {0x0f, 0x1e, 0x2d, 0x3c, 0x4b, 0x59, 0x68, 0x77};
-  gen_testvectors(tc4_key, tc4_iv);
+  uint8_t tc7_iv[8]   = {0x0f, 0x1e, 0x2d, 0x3c, 0x4b, 0x59, 0x68, 0x77};
+  gen_testvectors(tc7_key, tc7_iv);
+  printf("\n");
 
 
   // TC 10: A random key and IV.
+  // key: echo -n "All your base are belong to us." | openssl dgst -sha256
+  // IV: echo -n "All your base are belong to us." | openssl dgst -md5
+  // TODO: Create these vectors.
+  printf("TC10: key: 'All your base are belong to us!, IV: 'IETF2013'\n");
+  printf("-----------------------------------------------------------\n");
   uint8_t tc10_key[32] = "All your base are belong to us!";
   uint8_t tc10_iv[8]   = "IETF2013";
   gen_testvectors(tc10_key, tc10_iv);
