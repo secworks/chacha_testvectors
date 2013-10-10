@@ -68,9 +68,8 @@ typedef struct
 #define PLUSONE(v) (PLUS((v), 1))
 
 // Little endian machine assumed (x86-64).
-#define U32TO32_LITTLE(v) (v)
-#define U32TO8_LITTLE(p, v) (((uint32_t*)(p))[0] = U32TO32_LITTLE(v))
-#define U8TO32_LITTLE(p) U32TO32_LITTLE(((uint32_t*)(p))[0])
+#define U32TO8_LITTLE(p, v) (((uint32_t*)(p))[0] = v)
+#define U8TO32_LITTLE(p) (((uint32_t*)(p))[0])
 
 #define QUARTERROUND(a, b, c, d) \
   x[a] = PLUS(x[a],x[b]); x[d] = ROTATE(XOR(x[d],x[a]),16); \
