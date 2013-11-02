@@ -325,6 +325,10 @@ void gen_testvectors(uint8_t *key, uint8_t *iv)
       // Start with clean context.
       init_ctx(&my_ctx, rounds[ri]);
       init(&my_ctx, key, keylens[ki], iv);
+
+      // Print internal state after init.
+      printf("State after init:\n");
+      print_ctx(&my_ctx);
       
       // Block 0.
       next(&my_ctx, data, result);
