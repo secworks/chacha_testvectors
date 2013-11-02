@@ -11,8 +11,6 @@
 
 (CC) = clang
 (FLAGS) = -Wall -O2
-(TARGET)=chacha
-(SRC) = chacha.c
 
 all:
 	$(CC) $(FLAGS) -o chacha chacha.c
