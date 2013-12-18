@@ -12,8 +12,20 @@
 (CC) = clang
 (FLAGS) = -Wall -O2
 
-all:
-	$(CC) $(FLAGS) -o chacha chacha.c
+all: gen_chacha_testvectors
+
+
+gen_chacha_testvectors: chacha.c
+	$(CC) $(FLAGS) -o gen_chacha_testvectors chacha.c
+
+
+generate: gen_chacha_testvectors
+	./gen_chacha_testvectors > chacha_testvectors.txt
+
+
+clean:
+	rm -f gen_chacha_testvectors
+	rm -f chacha_testvectors.txt
 
 #=======================================================================
 # EOF Makefile
