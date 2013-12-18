@@ -1,8 +1,7 @@
 //======================================================================
 //
-// chacha.c
-// --------
-//
+// gen_chacha_testvectors.c
+// ------------------------
 // ChaCha reference model and test vector generator. Very much
 // needed for ChaCha. The code is heavily based on the chacha ref 
 // model by DJB. This code is self contained, provides test vectors
@@ -461,7 +460,6 @@ int main(void)
   return 0;
 }
 
-
 //======================================================================
-// EOF chacha.c
+// EOF gen_chacha_testvectors.c
 //======================================================================

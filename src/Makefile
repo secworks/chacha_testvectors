@@ -12,11 +12,11 @@
 (CC) = clang
 (FLAGS) = -Wall -O2
 
-all: gen_chacha_testvectors
+all: generator
 
 
-gen_chacha_testvectors: chacha.c
-	$(CC) $(FLAGS) -o gen_chacha_testvectors chacha.c
+generator: gen_chacha_testvectors.c
+	$(CC) $(FLAGS) -o gen_chacha_testvectors gen_chacha_testvectors.c
 
 
 generate: gen_chacha_testvectors
