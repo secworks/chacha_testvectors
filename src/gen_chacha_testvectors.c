@@ -338,12 +338,8 @@ void gen_testvectors(uint8_t *key, uint8_t *iv)
       print_ctx(&my_ctx);
       
       next(&my_ctx, data, result0);
-      printf("Internal state after block 0:\n");
-      print_ctx(&my_ctx);
       
       next(&my_ctx, data, result1);
-      printf("Internal state after block 1:\n");
-      print_ctx(&my_ctx);
       
       printf("Keystream block :\n");
       print_block(result0);
