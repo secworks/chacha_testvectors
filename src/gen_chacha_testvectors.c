@@ -1,40 +1,41 @@
+
 //======================================================================
 //
 // gen_chacha_testvectors.c
 // ------------------------
 // ChaCha reference model and test vector generator. Very much
-// needed for ChaCha. The code is heavily based on the chacha ref 
+// needed for ChaCha. The code is heavily based on the chacha ref
 // model by DJB. This code is self contained, provides test vectors
-// and is somewhat ceaned up. (Does not calls functions Salsa20- 
+// and is somewhat ceaned up. (Does not calls functions Salsa20-
 // something etc.)
 //
 //
 // Copyright (c) 2013 Secworks Sweden AB
 // All rights reserved.
-// 
-// Redistribution and use in source and binary forms, with or 
-// without modification, are permitted provided that the following 
-// conditions are met: 
-// 
-// 1. Redistributions of source code must retain the above copyright 
-//    notice, this list of conditions and the following disclaimer. 
-// 
-// 2. Redistributions in binary form must reproduce the above copyright 
-//    notice, this list of conditions and the following disclaimer in 
-//    the documentation and/or other materials provided with the 
-//    distribution. 
-// 
-// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS 
-// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE 
-// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, 
-// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, 
+//
+// Redistribution and use in source and binary forms, with or
+// without modification, are permitted provided that the following
+// conditions are met:
+//
+// 1. Redistributions of source code must retain the above copyright
+//    notice, this list of conditions and the following disclaimer.
+//
+// 2. Redistributions in binary form must reproduce the above copyright
+//    notice, this list of conditions and the following disclaimer in
+//    the documentation and/or other materials provided with the
+//    distribution.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
+// FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+// COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+// INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING,
 // BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER 
-// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
-// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
-// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF 
+// LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+// STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+// ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
 // ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 //======================================================================
@@ -53,7 +54,7 @@
 typedef struct
 {
   uint32_t state[16];
-  uint8_t rounds; 
+  uint8_t rounds;
 } chacha_ctx;
 
 
@@ -86,7 +87,7 @@ static const uint8_t TAU[16]   = "expand 16-byte k";
 
 //------------------------------------------------------------------
 // doublerounds()
-// 
+//
 // Perform rounds/2 number of doublerounds.
 // TODO: Change output format to 16 words.
 //------------------------------------------------------------------
@@ -95,7 +96,7 @@ static void doublerounds(uint8_t output[64], const uint32_t input[16], uint8_t r
   uint32_t x[16];
   int32_t i;
 
-  for (i = 0;i < 16;++i) { 
+  for (i = 0;i < 16;++i) {
     x[i] = input[i];
   }
 
@@ -143,7 +144,7 @@ void init(chacha_ctx *x, uint8_t *key, uint32_t keylen, uint8_t *iv)
     x->state[9]  = U8TO32_LITTLE(key + 20);
     x->state[10] = U8TO32_LITTLE(key + 24);
     x->state[11] = U8TO32_LITTLE(key + 28);
-  } 
+  }
 
   else {
     // 128 bit key.
@@ -160,7 +161,7 @@ void init(chacha_ctx *x, uint8_t *key, uint32_t keylen, uint8_t *iv)
     x->state[10] = U8TO32_LITTLE(key + 8);
     x->state[11] = U8TO32_LITTLE(key + 12);
   }
-    
+
   // Reset block counter and add IV to state.
   x->state[12] = 0;
   x->state[13] = 0;
@@ -171,9 +172,9 @@ void init(chacha_ctx *x, uint8_t *key, uint32_t keylen, uint8_t *iv)
 
 //------------------------------------------------------------------
 // next()
-// 
-// Given a pointer to the next block m of 64 cleartext bytes will 
-// use the given context to transform (encrypt/decrypt) the 
+//
+// Given a pointer to the next block m of 64 cleartext bytes will
+// use the given context to transform (encrypt/decrypt) the
 // block. The result will be stored in c.
 //------------------------------------------------------------------
 void next(chacha_ctx *ctx, const uint8_t *m, uint8_t *c)
@@ -182,7 +183,7 @@ void next(chacha_ctx *ctx, const uint8_t *m, uint8_t *c)
   uint8_t x[64];
   uint8_t i;
 
-  
+
   // Update the internal state and increase the block counter.
   doublerounds(x, ctx->state, ctx->rounds);
   ctx->state[12] = PLUSONE(ctx->state[12]);
@@ -192,7 +193,7 @@ void next(chacha_ctx *ctx, const uint8_t *m, uint8_t *c)
 
   // XOR the input block with the new temporal state to
   // create the transformed block.
-  for (i = 0 ; i < 64 ; ++i) { 
+  for (i = 0 ; i < 64 ; ++i) {
     c[i] = m[i] ^ x[i];
   }
 }
@@ -226,7 +227,7 @@ void print_ctx(chacha_ctx *ctx)
   uint8_t i;
 
   for (i = 0; i < 16; i+= 2) {
-    printf("state[%02d - %02d] = 0x%08x 0x%08x\n", 
+    printf("state[%02d - %02d] = 0x%08x 0x%08x\n",
            i, (i + 1), ctx->state[i], ctx->state[(i + 1)]);
   }
   printf("\n");
@@ -301,7 +302,7 @@ void gen_testvectors(uint8_t *key, uint8_t *iv)
                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                       0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-  
+
   uint8_t result0[64] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -310,7 +311,7 @@ void gen_testvectors(uint8_t *key, uint8_t *iv)
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
-  
+
   uint8_t result1[64] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
                          0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -336,12 +337,12 @@ void gen_testvectors(uint8_t *key, uint8_t *iv)
 
       printf("Internal state after init:\n");
       print_ctx(&my_ctx);
-      
+
       next(&my_ctx, data, result0);
-      
+
       next(&my_ctx, data, result1);
-      
-      printf("Keystream block :\n");
+
+      printf("Keystream block 0:\n");
       print_block(result0);
       printf("Keystream block 1:\n");
       print_block(result1);
@@ -406,7 +407,7 @@ int main(void)
   gen_testvectors(tc4_key, tc4_iv);
   printf("\n");
 
- 
+
   printf("TC5: Every even bit set in key and IV.\n");
   printf("--------------------------------------\n");
   uint8_t tc5_key[32] = {0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55, 0x55,
@@ -417,7 +418,7 @@ int main(void)
   gen_testvectors(tc5_key, tc5_iv);
   printf("\n");
 
- 
+
   printf("TC6: Every odd bit set in key and IV.\n");
   printf("-------------------------------------\n");
   uint8_t tc6_key[32] = {0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa, 0xaa,
@@ -446,13 +447,13 @@ int main(void)
   // IV: echo -n "Internet Engineering Task Force" | openssl dgst -sha256
   printf("TC8: key: 'All your base are belong to us!, IV: 'IETF2013'\n");
   printf("----------------------------------------------------------\n");
-  uint8_t tc8_key[32] = {0xc4, 0x6e, 0xc1, 0xb1, 0x8c, 0xe8, 0xa8, 0x78, 
-                         0x72, 0x5a, 0x37, 0xe7, 0x80, 0xdf, 0xb7, 0x35, 
-                         0x1f, 0x68, 0xed, 0x2e, 0x19, 0x4c, 0x79, 0xfb, 
+  uint8_t tc8_key[32] = {0xc4, 0x6e, 0xc1, 0xb1, 0x8c, 0xe8, 0xa8, 0x78,
+                         0x72, 0x5a, 0x37, 0xe7, 0x80, 0xdf, 0xb7, 0x35,
+                         0x1f, 0x68, 0xed, 0x2e, 0x19, 0x4c, 0x79, 0xfb,
                          0xc6, 0xae, 0xbe, 0xe1, 0xa6, 0x67, 0x97, 0x5d};
   uint8_t tc8_iv[8]   = {0x1a, 0xda, 0x31, 0xd5, 0xcf, 0x68, 0x82, 0x21};
   gen_testvectors(tc8_key, tc8_iv);
-  
+
   return 0;
 }
 
